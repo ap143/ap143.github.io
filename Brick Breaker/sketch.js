@@ -127,7 +127,7 @@ class Ball{
         this.x = width/2;
         this.y = height-player_.len/2-this.radius;
         this.vel = width/960;
-        this.th = random(-PI/2+PI/36, PI/2-PI/36);
+        this.th = random(-PI/2+PI/6, PI/2-PI/6);
         this.isActive = true;
     }
     
