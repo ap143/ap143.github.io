@@ -13,7 +13,7 @@ void setup(){
 
 void draw(){
   
-  background(50);
+  background(100);
   
   for (int i = 0; i < nodes.size(); i++){
     nodes.get(i).show();

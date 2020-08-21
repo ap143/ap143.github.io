@@ -46,14 +46,14 @@ function draw() {
         
         player.show();
         ball.show();
-        player.x = constrain(ball.x-player.len/2, 0, width-player.len);
+        //player.x = constrain(ball.x-player.len/2, 0, width-player.len);
         
-        /*if (keyIsDown(LEFT_ARROW)){
+        if (keyIsDown(LEFT_ARROW)){
             player.x = max(player.x-width/960, 0);
         }
         if (keyIsDown(RIGHT_ARROW)){
             player.x = min(player.x+width/960, width-player.len);
-        } */   
+        } 
     }
     
 }
@@ -148,7 +148,7 @@ class Ball{
         	}
         	return;
         }
-        if (this.y<this.radius){
+        if (this.y<this.radius || this.y>height-this.radius){
         	this.th = PI-this.th;
         	return;
         }
