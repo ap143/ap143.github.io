@@ -1,9 +1,12 @@
 var player, comp;
 var ball;
-//var score = 0;
-//var scoreBox;
-//var highest;
-//var high = 0;
+var score = 0;
+var scoreBox;
+var highest;
+var high = 0;
+var count = true;
+var count2 = true;
+var diff;
 
 function setup() {
     createCanvas(windowWidth/2, 9*windowHeight/10);
@@ -11,14 +14,15 @@ function setup() {
     player = new Player();
     comp = new Comp();
     ball = new Ball();
-    //scoreBox = document.getElementById("Score");
-    //highest = document.getElementById("highest");
+    scoreBox = document.getElementById("Score");
+    highest = document.getElementById("highest");
+    diff = document.getElementById("diff");
     
 }
 
 function draw() {
     
-    for (var q = 0; q < 20; q++){
+    for (var q = 0; q < diff.value; q++){
         background(50);
         fill(50);
         stroke(255, 255, 0);
@@ -37,6 +41,11 @@ function draw() {
         }
         if (keyIsDown(RIGHT_ARROW)){
             player.x = constrain(player.x+1, 0, width-width/10);
+        }
+
+        if (ball.y <= height/2 && cos(ball.th)<0){
+        	count = true;
+        	count2 = true;
         }
         
     }
@@ -70,9 +79,12 @@ Player.prototype = {
         if (ball.x<this.x || ball.x>this.x+width/10){
             ball.th = -ball.th;
         }else{
-            if (ball.y>this.y && cos(ball.th)<0){
-                //scoreBox.innerHTML = "Score: " + score;
-                //highest.innerHTML = "Highest achieved: " + high;
+            if (ball.y<this.y && cos(ball.th)<0 && count){
+                score++;  
+                high = max(high, score);
+                scoreBox.innerHTML = "Score: " + score;
+                highest.innerHTML = "Highest: " + high;
+                count = false;
             }
             ball.th = PI-ball.th;
         }
@@ -135,8 +147,11 @@ Ball.prototype = {
         }
         if (this.y<this.radius || this.y>height-this.radius){
             this.th = PI-this.th;
-            //score--;
-            //scoreBox.innerHTML = "Score: " + score;
+            if (count2){
+            	score--;
+	            scoreBox.innerHTML = "Score: " + score;
+	            count2 = false;
+            }
             return;
         }
         if (player.check()){
