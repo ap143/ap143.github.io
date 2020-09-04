@@ -1,7 +1,7 @@
 ArrayList<Curve> l;
-boolean touchStarted = false;
 float tx, ty;
 boolean added = false;
+int selectedCurve = -1;
 
 void setup(){
   size(960, 540);
@@ -36,7 +36,6 @@ void mousePressed(){
   mouseX -= width/2;
   mouseY -= height/2;
   mouseY = -mouseY;
-  touchStarted = true;
   tx = mouseX;
   ty = mouseY;
 }
@@ -45,24 +44,14 @@ void mouseMoved(){
   mouseX -= width/2;
   mouseY -= height/2;
   mouseY = -mouseY;
-  if (!touchStarted) {
-    for (int i = 0; i < l.size(); i++){
-      l.get(i).active = false;
-    }
-    for (int i = 0; i < l.size(); i++){
-      if (l.get(i).check(mouseX, mouseY)){
-        l.get(i).active = true;
-        return;
-      }
-    }
-    return;
+  for (int i = 0; i < l.size(); i++){
+    l.get(i).active = false;
   }
-  if (!added) {
-    l.add(new Line(tx, ty, mouseX, mouseY));
-    added = true;
-  }else{
-    l.get(l.size()-1).x2 = mouseX;
-    l.get(l.size()-1).y2 = mouseY;
+  for (int i = 0; i < l.size(); i++){
+    if (l.get(i).check(mouseX, mouseY)){
+      l.get(i).active = true;
+      return;
+    }
   }
 }
 
@@ -73,6 +62,7 @@ void mouseDragged(){
   if (!added) {
     l.add(new Line(tx, ty, mouseX, mouseY));
     added = true;
+    selectedCurve = l.size()-1;
   }else{
     l.get(l.size()-1).x2 = mouseX;
     l.get(l.size()-1).y2 = mouseY;
@@ -80,7 +70,7 @@ void mouseDragged(){
 }
 
 void mouseReleased(){
-  touchStarted = false;
   added = false;
   if (l.size()>0) l.get(l.size()-1).active = false;
+  selectedCurve = -1;
 }
