@@ -1,5 +1,7 @@
 class Line extends Curve implements CurveInterface{
   
+  String a1, b1, c1;
+  
   Line(){
     super();
   }
@@ -32,10 +34,30 @@ class Line extends Curve implements CurveInterface{
     strokeWeight(1);
     if (this.active){
       fill(200, 0, 0);
-      stroke(200, 0, 0);
+      stroke(255, 0, 0);
       circle(this.x1, this.y1, 5);
       circle(this.x2, this.y2, 5);
+      this.writeEquation();
     }
+  }
+  
+  void writeEquation(){
+    float aa = this.y1-this.y2;
+    float bb = this.x2-this.x1;
+    float cc = (this.y2-this.y1)*this.x1-this.y1*(this.x2-this.x1);
+    float gg = min(aa==0?Float.MAX_VALUE:abs(aa), bb==0?Float.MAX_VALUE:abs(bb), cc==0?Float.MAX_VALUE:abs(cc));
+    this.a1 = String.format("%.2f", aa/gg);
+    this.b1 = String.format("%.2f", bb/gg);
+    this.c1 = String.format("%.2f", cc/gg);
+    pushMatrix();
+    textAlign(CENTER, BOTTOM);
+    textSize(15);
+    fill(20, 20, 255);
+    translate((this.x1+this.x2)/2, (this.y1+this.y2)/2);
+    rotate(atan((this.y2-this.y1)/(this.x2- this.x1)));
+    scale(1, -1);
+    text(a1+"x + "+b1+"y + "+c1+" = 0", 0, 0);
+    popMatrix();
   }
   
   void intersection(Curve other){

@@ -44,7 +44,6 @@ class Node{
       }
       this.speed = sqrt(pow(this.x-width/2, 2)+pow(this.y-height/2, 2))/100;
     }
-    
   }
   
 }
