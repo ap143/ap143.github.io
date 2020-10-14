@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>GameOfLife</title>
+    <script src="libraries/p5.js" type="text/javascript"></script>
+
+    <script src="libraries/p5.dom.js" type="text/javascript"></script>
+    <script src="libraries/p5.sound.js" type="text/javascript"></script>
+
+    <script src="sketch.js" type="text/javascript"></script>
+
+    <style> 
+    html, body {
+      height: 100%;
+  }
+  
+  html {
+      display: table;
+      margin: auto;
+  }
+  
+  body {
+      display: table-cell;
+      vertical-align: middle;
+  }  
+    canvas {
+    vert7ical-align: top;
+    } 
+    .control{
+        margin: 10px auto;
+        width: fit-content;
+    }
+    .ctr{
+        margin: 0px 50px;
+        width: 100px;
+    }
+    </style>
+  </head>
+  <body>
+      <div class="control">
+          <button id = "start" class="ctr">Play</button>
+          <button id = "pause" class="ctr">Pause</button>
+          <button id = "reset" class="ctr">Reset</button>
+      </div>
+  </body>
+</html>
