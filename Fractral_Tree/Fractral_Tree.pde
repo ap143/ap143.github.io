@@ -3,7 +3,7 @@ ArrayList<Node> l2 = new ArrayList();
 boolean f = false;
 
 void setup(){
-  size(900, 900);
+  size(1600, 1000);
   list.add(new Node());
   background(0);
 }
@@ -16,8 +16,8 @@ void draw(){
     if (list.get(i).cur>list.get(i).len){
       l2.add(list.get(i).copy1());
       l2.add(list.get(i).copy2());
-      //l2.add(list.get(i).copy3());
-      //l2.add(list.get(i).copy4());
+      l2.add(list.get(i).copy3());
+      l2.add(list.get(i).copy4());
     }else{
       l2.add(list.get(i).next());
     }
@@ -25,7 +25,7 @@ void draw(){
   list.clear();
   list = (ArrayList<Node>) l2.clone();
   for (int i = 0; i < list.size(); i++){
-    if (list.get(i).len<=10) f = true;
+    if (list.get(i).len<=20) f = true;
     break;
   }
 }
