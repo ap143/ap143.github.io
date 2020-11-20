@@ -3,7 +3,7 @@ Node root;
 float len;
 float rad;
 AVL tr;
-boolean f = false;
+boolean f = true;
 
 void setup(){
   
@@ -12,7 +12,7 @@ void setup(){
   surface.setLocation(0, 0);
   
   len = width*0.9/2;
-  rad = width/100;
+  rad = width/400;
   
   tr = new AVL<Integer>();
   
@@ -44,7 +44,7 @@ void draw(){
 }
 
 void initial(){
-  f = false;
+  f = true;
   tr.insert(int(random(1, tr.total*10+100)));
   updateHeight(tr.root, 1);
 }
