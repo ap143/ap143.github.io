@@ -1,4 +1,6 @@
+import peasy.*;
 import java.util.ArrayList;
+ 
 
 final color RED = color(185, 0, 0);
 final color GREEN = color(0, 155, 72);
@@ -18,19 +20,28 @@ final String triMoveR = "RulUruLU";
 final String triMoveL = "lURuLUru";
 final String lstMove = "RuuruRurlUULUlUL";
 
+PeasyCam cam;
 Face[] faces;
 int len;
 long time;
 Thread temp;
 int delay;
-boolean solving = false;
+boolean start = true;
+boolean f = false;
+float theta = 0.05;
+
+//void mousePressed(){
+//  f = false;
+//}
 
 void setup(){
-  size(800, 800);
+  size(800, 800, P3D);
   len = 50;
-  delay = 2;
+  cam = new PeasyCam(this, 500);
+  delay = 0;
   initial();
   scramble();
+  delay = 4;
   temp = new Thread(){
     @Override
     public void run(){
@@ -43,20 +54,16 @@ void setup(){
       //run();
     }
   };
-  temp.start();
 }
 
 void draw(){
+  if (f) return;
   background(200);
-  translate(width/2, height*2/3);
-  scale(1, -1);
   drawCube();
-  textAlign(CENTER, CENTER);
-  textSize(30);
-  fill(0);
-  scale(1, -1);
-  if (solving) text((System.currentTimeMillis()-time)/1000.0+" s", 0, -height*2/3+50);
-  scale(1, -1);
+  if (start){
+    start = false;
+    temp.start();
+  }
   if (!temp.isAlive()){
     frameRate(0);
   }
@@ -451,7 +458,7 @@ color getSideOne(int x, int y){ // CROSS MAKING
 }
 
 void initial(){
-  faces = new Face[20];
+  faces = new Face[26];
   faces[0] = new Face(1, 1, 1); faces[0].set(BLUE, ORANGE, WHITE);
   faces[1] = new Face(1, 1, -1); faces[1].set(BLUE, ORANGE, YELLOW);
   faces[2] = new Face(1, -1, 1); faces[2].set(BLUE, RED, WHITE);
@@ -476,6 +483,13 @@ void initial(){
   faces[18] = new Face(-1, 1, 0); faces[18].set(GREEN, ORANGE, BLACK);
   faces[19] = new Face(-1, -1, 0); faces[19].set(GREEN, RED, BLACK);
   
+  //front = new Face[6];
+  faces[20] = new Face(0, 0, 1); faces[20].set(BLACK, BLACK, WHITE);
+  faces[21] = new Face(1, 0, 0); faces[21].set(BLUE, BLACK, BLACK);
+  faces[22] = new Face(-1, 0, 0); faces[22].set(GREEN, BLACK, BLACK);
+  faces[23] = new Face(0, 1, 0); faces[23].set(BLACK, ORANGE, BLACK);
+  faces[24] = new Face(0, -1, 0); faces[24].set(BLACK, RED, BLACK);
+  faces[25] = new Face(0, 0, -1); faces[25].set(BLACK, BLACK, YELLOW);
 }
 
 String convert(color c, String s){
@@ -560,63 +574,162 @@ String convert(color c, String s){
 }
 
 void move(char a){
-  waitt(delay);
+  //waitt(delay);
+  float rX = 0;
+  float rY = 0;
+  float rZ = 0;
   if (a == 'R'){
+    while (abs(rX) < PI/2){
+      rX += theta;
+      for (Face f: faces){
+        if (f.x != 1) continue;
+        f.rotX = rX;
+      }
+      waitt(delay);
+    }
     for (Face f: faces){
       if (f.x != 1) continue;
       f.rotate(1, 0, 0);
     }
   }else if (a == 'r'){
+    while (abs(rX) < PI/2){
+      rX -= theta;
+      for (Face f: faces){
+        if (f.x != 1) continue;
+        f.rotX = rX;
+      }
+      waitt(delay);
+    }
     for (Face f: faces){
       if (f.x != 1) continue;
       f.rotate(-1, 0, 0);
     }
   }else if (a == 'L'){
+    while (abs(rX) < PI/2){
+      rX -= theta;
+      for (Face f: faces){
+        if (f.x != -1) continue;
+        f.rotX = rX;
+      }
+      waitt(delay);
+    }
     for (Face f: faces){
       if (f.x != -1) continue;
       f.rotate(-1, 0, 0);
     }
   }else if (a == 'l'){
+    while (abs(rX) < PI/2){
+      rX += theta;
+      for (Face f: faces){
+        if (f.x != -1) continue;
+        f.rotX = rX;
+      }
+      waitt(delay);
+    }
     for (Face f: faces){
       if (f.x != -1) continue;
       f.rotate(1, 0, 0);
     }
   }else if (a == 'U'){
+    while (abs(rY) < PI/2){
+      rY += theta;
+      for (Face f: faces){
+        if (f.y != 1) continue;
+        f.rotY = rY;
+      }
+      waitt(delay);
+    }
     for (Face f: faces){
       if (f.y != 1) continue;
       f.rotate(0, 1, 0);
     }
   }else if (a == 'u'){
+    while (abs(rY) < PI/2){
+      rY -= theta;
+      for (Face f: faces){
+        if (f.y != 1) continue;
+        f.rotY = rY;
+      }
+      waitt(delay);
+    }
     for (Face f: faces){
       if (f.y != 1) continue;
       f.rotate(0, -1, 0);
     }
   }else if (a == 'D'){
+    while (abs(rY) < PI/2){
+      rY -= theta;
+      for (Face f: faces){
+        if (f.y != -1) continue;
+        f.rotY = rY;
+      }
+      waitt(delay);
+    }
     for (Face f: faces){
       if (f.y != -1) continue;
       f.rotate(0, -1, 0);
     }
   }else if (a == 'd'){
+    while (abs(rY) < PI/2){
+      rY += theta;
+      for (Face f: faces){
+        if (f.y != -1) continue;
+        f.rotY = rY;
+      }
+      waitt(delay);
+    }
     for (Face f: faces){
       if (f.y != -1) continue;
       f.rotate(0, 1, 0);
     }
   }else if (a == 'F'){
+    while (abs(rZ) < PI/2){
+      rZ += theta;
+      for (Face f: faces){
+        if (f.z != 1) continue;
+        f.rotZ = rZ;
+      }
+      waitt(delay);
+    }
     for (Face f: faces){
       if (f.z != 1) continue;
       f.rotate(0, 0, 1);
     }
   }else if (a == 'f'){
+    while (abs(rZ) < PI/2){
+      rZ -= theta;
+      for (Face f: faces){
+        if (f.z != 1) continue;
+        f.rotZ = rZ;
+      }
+      waitt(delay);
+    }
     for (Face f: faces){
       if (f.z != 1) continue;
       f.rotate(0, 0, -1);
     }
   }else if (a == 'B'){
+    while (abs(rZ) < PI/2){
+      rZ -= theta;
+      for (Face f: faces){
+        if (f.z != -1) continue;
+        f.rotZ = rZ;
+      }
+      waitt(delay);
+    }
     for (Face f: faces){
       if (f.z != -1) continue;
       f.rotate(0, 0, -1);
     }
   }else if (a == 'b'){
+    while (abs(rZ) < PI/2){
+      rZ += theta;
+      for (Face f: faces){
+        if (f.z != -1) continue;
+        f.rotZ = rZ;
+      }
+      waitt(delay);
+    }
     for (Face f: faces){
       if (f.z != -1) continue;
       f.rotate(0, 0, 1);
@@ -625,24 +738,10 @@ void move(char a){
 }
 
 void drawCube(){
+  strokeWeight(3);
   for (Face f: faces){
     f.render();
   }
-  drawSticker(0, 0, WHITE);
-  drawSticker(3, 0, BLUE);
-  drawSticker(-3, 0, GREEN);
-  drawSticker(0, 3, ORANGE);
-  drawSticker(0, -3, RED);
-  drawSticker(0, 6, YELLOW);
-}
-
-void drawSticker(int x, int y, color c){
-  if (c == BLACK) return;
-  stroke(0);
-  strokeWeight(3);
-  fill(c);
-  rectMode(CENTER);
-  rect(x*len, y*len, len, len);
 }
 
 void waitt(int delay){
