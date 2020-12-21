@@ -1,83 +1,97 @@
+import java.util.*;
+
+float b = 255;
+float g = 0;
+float r = 0;
+int del = 20;
+PImage image;
+PImage[] clrs;
 int[] ar;
 int n;
-int len;
-color[] clr;
-Thread prcs;
-boolean started = false;
-boolean finished = false;
-int p1, p2;
-int delay;
-final color WHITE = color(255, 255, 255);
-final color RED = color(255, 0, 0);
-
-boolean f = false;
+int delay = 1;
+Thread thread;
 
 void setup(){
-  surface.setResizable(true);
-  surface.setSize(int(displayWidth*0.95), int(displayHeight*0.95));
-  surface.setLocation(0, 0);
-  len = 2;
-  n = width/len;
-  p1 = p2 = 0;
-  delay = 1;
+  size(880, 1080);
+  image  = loadImage("chadwick.png");
+  clrs = new PImage[width/del*height/del];
+  n = clrs.length;
   ar = new int[n];
-  clr = new color[n];
+  ArrayList<Integer> temp = new ArrayList<Integer>();
   for (int i = 0; i < n; i++){
-    ar[i] = (int) random(1, height);
-    clr[i] = WHITE;
+    temp.add(i);
   }
-  prcs = new Thread(){
+  Collections.shuffle(temp);
+  for (int i = 0; i < n; i++){
+    ar[i] = temp.get(i);
+  }
+  int x = 0;
+  for (int i = 0; i < width/del; i++){
+    for (int j = 0; j < height/del; j++){
+      clrs[x++] = image.get(i*del, j*del, del, del);
+    }
+  }
+  thread = new Thread(){
     @Override
     public void run(){
-      //quicksort(ar, 0, n-1);
-      //heapSort();
       mergeSort(0, n-1);
+      //radixSort(2);
     }
   };
+  thread.start();
 }
 
 void draw(){
-  if (!f) return;
-  if (prcs.isInterrupted()) return;
   background(0);
   for (int i = 0; i < n; i++){
-    //fill(clr[i]);
-    //noStroke();
-    //rect(i*len, height-ar[i], len, ar[i]);
-    stroke(clr[i]);
-    strokeWeight(len);
-    point(i*len+len/2, height-ar[i]);
+    image(clrs[ar[i]], (i/(height/del))*del, (i%(height/del))*del);
   }
-  if (!started){
-    prcs.start();
-    started = true;
+}
+
+void radixSort(int r){
+  int m = 1;
+  int mxx = n;
+  long temp = 1;
+  while (temp <= mxx){
+    temp = temp*r;
+    m++;
   }
-  if (!prcs.isAlive()){
-    if (!finished){
-      for (int i = 0; i < delay/10; i++){
-      if (p2 != n){
-        clr[p2] = color(0, 255, 0);
-        p2++;
-      }else if (p1 != n){
-        clr[p1] = WHITE;
-        p1++;
-      }else{
-        finished = true;
-      }
+  int[][] mtr = new int[n][m];
+  for (int i = 0; i < n; i++){
+    int val = ar[i];
+    int x = 0;
+    while (val != 0){
+      mtr[ar[i]][x++] = val%r;
+      val /= r;
+    }
+    while (x < m) mtr[ar[i]][x++] = 0;
+  }
+  ArrayList<Queue<Integer>> qu = new ArrayList<Queue<Integer>>();
+  for (int i = 0; i < r; i++){
+    qu.add(new LinkedList<Integer>());
+  }
+  for (int i = 0; i < m; i++){
+    for (int j = 0; j < n; j++){
+      qu.get(mtr[ar[j]][i]).add(ar[j]);
+    }
+    int x = 0;
+    for (int j = 0; j < r; j++){
+      while (qu.get(j).size()!=0){
+        waitt();
+        ar[x++] = qu.get(j).remove();
       }
     }
   }
 }
 
+
 void heapSort(){
   for (int i = 1; i < n; i++){
-    clr[i] = RED;
     int j = i;
     while (j >= 1){
       if (ar[j] > ar[(j-1)/2]){
-        clr[j] = RED;
         try{
-          Thread.sleep(delay);
+          waitt();
         }catch(Exception e){
         
         }
@@ -85,15 +99,12 @@ void heapSort(){
         ar[(j-1)/2] = ar[j]; 
         ar[j] = temp;
         j = (j-1)/2;
-        clr[j] = WHITE;
       }else{
         break;
       }
     }
-    clr[i] = WHITE;
   }
   for (int i = n-1; i >= 0; i--){
-    clr[i] = RED;
     int temp = ar[0];
     ar[0] = ar[i]; 
     ar[i] = temp;
@@ -103,28 +114,24 @@ void heapSort(){
         int mi = max(ar[2*j+1], ar[2*j+2]);
         if (mi > ar[j]){
           if (mi == ar[2*j+1]){
-            clr[2*j+2] = RED;
             try{
-              Thread.sleep(delay);
+              waitt();
             }catch(Exception e){
              
             }
             temp = ar[j];
             ar[j] = ar[2*j+1]; 
             ar[2*j+1] = temp;
-            clr[2*j+1] = WHITE;
             j = 2*j+1;
           }else{
-            clr[2*j+2] = RED;
             try{
-              Thread.sleep(delay);
+              waitt();
             }catch(Exception e){
              
             }
             temp = ar[j];
             ar[j] = ar[2*j+2]; 
             ar[2*j+2] = temp;
-            clr[2*j+2] = WHITE;
             j = 2*j+2;
           }
         }else{
@@ -132,32 +139,27 @@ void heapSort(){
         }
       }else{
         if (ar[j] < ar[2*j+1]){
-          clr[2*j+1] = RED;
           try{
-            Thread.sleep(delay);
+            waitt();
           }catch(Exception e){
             
           }
           temp = ar[j];
           ar[j] = ar[2*j+1]; 
           ar[2*j+1] = temp;
-          clr[2*j+1] = WHITE;
           j = 2*j+1;
         }else{
           break;
         }
       }
     }
-    clr[i] = WHITE;
   }
 }
- 
+
 void quicksort(int arr[], int low, int high) 
 { 
     if (low < high) 
-    { 
-        clr[low] = RED;
-        clr[high] = RED;
+    {
         int pivot = arr[high];  
         int i = (low-1); // index of smaller element 
         for (int j=low; j<high; j++) 
@@ -166,10 +168,8 @@ void quicksort(int arr[], int low, int high)
             if (arr[j] < pivot) 
             { 
                 i++; 
-                clr[i] = RED;
-                clr[j] = RED;
                 try{
-                  Thread.sleep(delay);
+                  waitt();
                 }catch(Exception e){
                   
                 }
@@ -177,8 +177,6 @@ void quicksort(int arr[], int low, int high)
                 int temp = arr[i]; 
                 arr[i] = arr[j]; 
                 arr[j] = temp; 
-                clr[i] = WHITE;
-                clr[j] = WHITE;
             } 
         } 
   
@@ -190,8 +188,6 @@ void quicksort(int arr[], int low, int high)
         int pi = i+1; 
         quicksort(arr, low, pi-1); 
         quicksort(arr, pi+1, high); 
-        clr[low] = WHITE;
-        clr[high] = WHITE;
     } 
 }
 
@@ -207,8 +203,6 @@ void merge(int a, int b, int c){
   int i = a;
   int j = b;
   int k = a;
-  clr[a] = RED;
-  clr[c] = RED;
   while (i < b && j <= c){
     if (ar[i] < ar[j]){
       temp[k] = ar[i];
@@ -230,23 +224,19 @@ void merge(int a, int b, int c){
     k++;
   }
   for (int l = a; l <= c; l++) {
-    clr[l] = RED;
     try{
-      Thread.sleep(delay);
+      waitt();
     }catch(Exception e){
       
     }
     ar[l] = temp[l];
-    clr[l] = WHITE;
   }
-  clr[a] = WHITE;
-  clr[c] = WHITE;
 }
 
-void mouseClicked(){
-  f = true;
-}
-
-void onResize(){
-  
+void waitt(){
+  try{  
+    Thread.sleep(delay);
+  }catch(Exception e){
+    
+  }
 }

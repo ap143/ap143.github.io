@@ -31,7 +31,7 @@ boolean start = true;
 float theta = -0.03;
 
 void setup(){
-  size(800, 800, P3D);
+  fullScreen(P3D);
   len = 50;
   cam = new PeasyCam(this, 500);
   delay = 0;
@@ -56,6 +56,8 @@ void setup(){
 
 void draw(){
   background(200);
+  if (touches.length > 0){mouseX = (int) touches[0].x;
+  mouseY = (int) touches[0].y;}
   drawCube();
   if (start){
     start = false;
