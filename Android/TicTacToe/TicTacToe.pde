@@ -13,6 +13,7 @@ int left;
 Set<MARK[][]> set = new HashSet<MARK[][]>();
 boolean finish = false;
 boolean active = true;
+int[] facts = new int[10];
 
 void setup(){
   fullScreen();
@@ -22,6 +23,7 @@ void setup(){
       data[i][j] = MARK.E;
     }
   }
+  for (int i = 0; i < 10; i++) facts[i] = -1;
   left = 9;
 }
 
@@ -102,9 +104,9 @@ int[] nextMove(MARK[][] dt, int lt, boolean main){
           int[] nxt = nextMove(temp, lt-1, false);
           tScr = -nxt[2];
         }else if (a == c){
-          tScr = 1;
+          tScr = fact(lt-1);
         }else{
-          tScr = -1;
+          tScr = -fact(lt-1);
         }
       }
       scores.add(tScr);
@@ -127,12 +129,13 @@ int[] nextMove(MARK[][] dt, int lt, boolean main){
 }
 
 int fact(int n){
-  if (n <= 0) return 1;
+  if (facts[n] != -1) return facts[n];
+  if (n <= 0) return facts[n] = 1;
   int ans = 1;
   for (int i = 1; i <= n; i++){
     ans *= i;
   }
-  return ans;
+  return facts[n] = ans;
 }
 
 boolean compare(int[] a, int[] b){

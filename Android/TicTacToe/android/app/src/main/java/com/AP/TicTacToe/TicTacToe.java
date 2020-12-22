@@ -1,4 +1,24 @@
-import java.util.*;
+package com.AP.TicTacToe;
+
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
+
+import java.util.*; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+public class TicTacToe extends PApplet {
+
+
 
 enum MARK{
   E, X, O;
@@ -13,11 +33,10 @@ int left;
 Set<MARK[][]> set = new HashSet<MARK[][]>();
 boolean finish = false;
 boolean active = true;
-float blur = 0;
 int[] facts = new int[10];
 
-void setup(){
-  size(600, 600);
+public void setup(){
+  
   len = width/3;
   for (int i = 0; i < 3; i++){
     for (int j = 0; j < 3; j++){
@@ -28,17 +47,17 @@ void setup(){
   left = 9;
 }
 
-void draw(){
-  if (active) blur = 0;
+public void draw(){
   background(0);
+  translate(0, (height-width)/2);
   strokeWeight(5);
   stroke(255);
   noFill();
   for (int i = 0; i < 2; i++){
-    line((i+1)*width/3, del, (i+1)*width/3, height-del);
+    line((i+1)*width/3, del, (i+1)*width/3, width-del);
   }
   for (int i = 0; i < 2; i++){
-    line(del, (i+1)*height/3, width-del, (i+1)*height/3);
+    line(del, (i+1)*width/3, width-del, (i+1)*width/3);
   }
   for (int i = 0; i < 3; i++){
     for (int j = 0; j < 3; j++){
@@ -51,36 +70,34 @@ void draw(){
   }
   MARK a = check(data);
   if (a == null && left != 0) {
-    if (player == chance) nextMove(data, left, true);
+    if (player == chance) {
+      nextMove(data, left, true);
+    }
     return;
   }
   if (active){
     active = false;
   }
-  filter(BLUR, blur);
-  blur = min(10, blur+0.2);
   textAlign(CENTER, CENTER);
-  if (blur >= 5){
-    textSize(20);
-    fill(255);
-    text("Press any key for new game!", width/2, 3*height/4);
-  }
+  textSize(20);
+  fill(255);
+  text("Tap to continue!", width/2, 5*width/4);
   textSize(50);
   if (left == 0 && a == null){
     fill(255, 255, 0);
-    text("Draw!", width/2, width/2);
+    text("Draw!", width/2, -width/4);
     return;
   }
   if ((player && left%2 == 0) || (!player && left%2 != 0)){
     fill(255, 0, 0);
-    text("LOL, you lost!", width/2, width/2);
+    text("LOL, you lost!", width/2, -width/4);
   }else{
     fill(0, 255, 0);
-    text("Cool, you won!", width/2, width/2);
+    text("Cool, you won!", width/2, -width/4);
   }
 }
 
-int[] nextMove(MARK[][] dt, int lt, boolean main){
+public int[] nextMove(MARK[][] dt, int lt, boolean main){
   //System.out.println(lt+" "+main);
   ArrayList<Integer> scores = new ArrayList<Integer>();
   ArrayList<int[]> move = new ArrayList<int[]>();
@@ -131,7 +148,7 @@ int[] nextMove(MARK[][] dt, int lt, boolean main){
   return new int[]{move.get(res)[0], move.get(res)[1], mx};
 }
 
-int fact(int n){
+public int fact(int n){
   if (facts[n] != -1) return facts[n];
   if (n <= 0) return facts[n] = 1;
   int ans = 1;
@@ -141,7 +158,7 @@ int fact(int n){
   return facts[n] = ans;
 }
 
-boolean compare(int[] a, int[] b){
+public boolean compare(int[] a, int[] b){
   if (a[0] == b[0]){
     if (a[1] == b[1]){
       return a[2] > b[2];
@@ -153,13 +170,13 @@ boolean compare(int[] a, int[] b){
   }
 }
 
-MARK[][] copyy(MARK[][] data){
+public MARK[][] copyy(MARK[][] data){
   MARK[][] temp = new MARK[3][3];
         for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) temp[i][j] = data[i][j];
   return temp;
 }
 
-void drawO(int x, int y){
+public void drawO(int x, int y){
   pushMatrix();
   strokeWeight(10);
   stroke(100, 100, 255, 150);
@@ -171,7 +188,7 @@ void drawO(int x, int y){
   popMatrix();
 }
 
-void drawX(int x, int y){
+public void drawX(int x, int y){
   pushMatrix();
   translate(len*x+len/2, len*y+len/2);
   strokeWeight(10);
@@ -191,7 +208,7 @@ void drawX(int x, int y){
   popMatrix();
 }
 
-MARK check(MARK[][] data){
+public MARK check(MARK[][] data){
   for (int i = 0; i < 3; i++){
     if (data[i][0] == data[i][1] && data[i][1] == data[i][2] && data[i][0] != MARK.E) return data[i][0];
     if (data[0][i] == data[1][i] && data[1][i] == data[2][i] && data[0][i] != MARK.E) return data[0][i];
@@ -201,26 +218,27 @@ MARK check(MARK[][] data){
   return null;
 }
 
-void mouseClicked(){
-  if (!active) return;
+public void touchStarted(){
+  if (!active) {
+    active = true;
+    player = !player;
+    for (int i = 0; i < 3; i++){
+      for (int j = 0; j < 3; j++){
+        data[i][j] = MARK.E;
+      }
+    }
+    left = 9;
+    chance = true;
+    return;
+  }
   if (player == chance) return;
-  int i = (int) (mouseY/len);
-  int j = (int) (mouseX/len);
+  int i = (int) ((touches[0].y-(height-width)/2)/len);
+  int j = (int) (touches[0].x/len);
+  if (i < 0 || i > 2) return;
   if (data[i][j] != MARK.E) return;
   data[i][j] = chance ? MARK.X : MARK.O;
   chance = !chance;
   left--;
 }
-
-void keyPressed(){
-  if (active) return;
-  active = true;
-  player = !player;
-  for (int i = 0; i < 3; i++){
-    for (int j = 0; j < 3; j++){
-      data[i][j] = MARK.E;
-    }
-  }
-  left = 9;
-  chance = true;
+  public void settings() {  fullScreen(); }
 }
