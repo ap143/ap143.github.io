@@ -23,6 +23,25 @@ class Face{
     return x == rx && y == ry;
   }
   void rotate(int x, int y, int z){
+    //if (x != 0){
+    //  rotX = 0;
+    //  while (abs(rotX) < abs(PI/2*x)){
+    //    waitt(delay);
+    //    rotX += x*0.1;
+    //  }
+    //}else if (y != 0){
+    //  rotY = 0;
+    //  while (abs(rotY) < abs(PI/2*y)){
+    //    waitt(delay);
+    //    rotY += y*0.1;
+    //  }
+    //}else{
+    //  rotZ = 0;
+    //  while (abs(rotZ) < abs(PI/2*z)){
+    //    waitt(delay);
+    //    rotZ += z*0.1;
+    //  }
+    //}
     rotX = rotY = rotZ = 0;
     if (x != 0){
       if (x == 1){

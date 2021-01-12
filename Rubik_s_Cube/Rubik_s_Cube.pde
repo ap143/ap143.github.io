@@ -20,7 +20,6 @@ final String triMoveR = "RulUruLU";
 final String triMoveL = "lURuLUru";
 final String lstMove = "RuuruRurlUULUlUL";
 
-StringBuilder ans = new StringBuilder();
 PeasyCam cam;
 Face[] faces;
 int len;
@@ -28,7 +27,12 @@ long time;
 Thread temp;
 int delay;
 boolean start = true;
-float theta = -0.03;
+boolean f = false;
+float theta = 0.05;
+
+//void mousePressed(){
+//  f = false;
+//}
 
 void setup(){
   size(800, 800, P3D);
@@ -45,8 +49,6 @@ void setup(){
       long time = System.currentTimeMillis();
       solve();
       System.out.println(System.currentTimeMillis()-time);
-      System.out.println(ans);
-      System.out.println(ans.length());
       waitt(500);
       //scramble();
       //run();
@@ -55,11 +57,15 @@ void setup(){
 }
 
 void draw(){
+  if (f) return;
   background(200);
   drawCube();
   if (start){
     start = false;
     temp.start();
+  }
+  if (!temp.isAlive()){
+    frameRate(0);
   }
 }
 
@@ -568,9 +574,6 @@ String convert(color c, String s){
 }
 
 void move(char a){
-  if (temp != null) if (temp.isAlive()){
-    ans.append(a);
-  }
   //waitt(delay);
   float rX = 0;
   float rY = 0;
