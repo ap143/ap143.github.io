@@ -1,4 +1,5 @@
 import peasy.*;
+import java.util.LinkedList;
 
 color[] colors = {color(255, 255, 0), color(0, 255, 0), 
                   color(0, 64, 255), color(255, 0, 255),
@@ -9,7 +10,7 @@ PVector[] paths;
 float dt = 0.002;
 float sigma = 10, beta = 2.67, rho = 28;
 
-ArrayList<PVector>[] list;
+LinkedList<PVector>[] list;
 
 PeasyCam cam;
 
@@ -19,13 +20,13 @@ void setup(){
   cam = new PeasyCam(this, 200);
   
   paths = new PVector[5];
-  list = new ArrayList[paths.length];
+  list = new LinkedList[paths.length];
   
   for(int i = 0; i < paths.length; i++){
     paths[i] = new PVector(random(-40, 40), 
                            random(-40, 40),
                            random(-40, 40));
-    list[i] = new ArrayList<PVector>();
+    list[i] = new LinkedList<PVector>();
   }
  
 }
@@ -37,6 +38,7 @@ void draw(){
   // translate(width / 2, height / 2);
   // scale(2);
   
+  for(int r = 0; r < 2; r++){
   for(int i = 0; i < paths.length; i++){
     float dx = sigma*(paths[i].y-paths[i].x)*dt;
     float dy = (paths[i].x*(rho-paths[i].z)-paths[i].y)*dt;
@@ -45,6 +47,7 @@ void draw(){
     paths[i].y += dy;
     paths[i].z += dz;
     list[i].add(new PVector(paths[i].x, paths[i].y, paths[i].z));
+  }
   }
   noFill();
   strokeWeight(2);
@@ -57,7 +60,6 @@ void draw(){
     }
     endShape();
   }
-  
   cam.rotateY(0.01);
   
 }
