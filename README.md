@@ -58,3 +58,5 @@ YouTube links:-
 A* Algorithm: https://youtu.be/m0qEtlZ_boQ
 
 Fractral Trees: https://youtu.be/CliLxNZpytU
+
+Lorenz Attractor: https://youtu.be/frL96xhzLFM
